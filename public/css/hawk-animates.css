@@ -1,0 +1,47 @@
+@keyframes Rotate {
+  0% {
+    transform: rotate(0); }
+  100% {
+    transform: rotate(360deg); } }
+@keyframes Expose {
+  0% {
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+    opacity: 0; }
+  100% {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    opacity: 1; } }
+.expose {
+  clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+  opacity: 0;
+  -webkit-transition: opacity 1s ease 1s, clip-path 1s ease 1s;
+  transition: opacity 1s ease 1s, clip-path 1s ease 1s;
+  -webkit-transform: translateZ(0); }
+
+.expose--shown {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  opacity: 1; }
+
+@keyframes Levitate {
+  0% {
+    transform: translate3d(0, 0, 0); }
+  50% {
+    transform: translate3d(0, -6%, 0); }
+  100% {
+    transform: translate3d(0, 0, 0); } }
+@keyframes SphereLevitation {
+  0% {
+    transform: translate3d(0, 0, 0); }
+  50% {
+    transform: translate3d(0, -15%, 0); }
+  100% {
+    transform: translate3d(0, 0, 0); } }
+@keyframes LevitateShadow {
+  0% {
+    transform: scaleX(1);
+    opacity: 1; }
+  50% {
+    transform: scaleX(1.1);
+    opacity: .8; }
+  100% {
+    transform: scaleX(1);
+    opacity: 1; } }
