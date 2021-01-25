@@ -28,6 +28,10 @@ $(document).ready(function() {
     });
     ajaxOverlayer.run();
 
+    var coursesBookmarks = new Hawk.BookmarksManager($('#courses-bookmarks'), {
+      activeBookmarkClass: 'common-bookmark--active'
+    });
+    coursesBookmarks.run();
 
     /**$(window).resize(function() {
       $('.scrollable-section').mCustomScrollbar('update');
@@ -79,7 +83,7 @@ $(document).ready(function() {
 
     var ajaxRequestManager = new Hawk.AjaxRequestsManager();
 
-    ajaxRequestManager.get("http://localhost:8080/api/s3//buckets", {});
+   // ajaxRequestManager.get("http://localhost:8080/api/s3//buckets", {});
 
     var sections = $('.site-section').add($('#site-header')).add($('#site-footer')).add($('.skew-section'));
     var menuToggler = $('.menu-toggler');

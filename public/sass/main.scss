@@ -442,9 +442,15 @@ list-style-type: none;
         }
 
         &:first-child {
+            padding-left: 0;
+
             &:before {
                 display: none;
             }
+        }
+
+        &:last-child {
+            padding-right: 0;
         }
     }
 
@@ -460,6 +466,18 @@ list-style-type: none;
 
         &:hover {
             color: $secondary-color;
+        }
+    }
+}
+.horizontal-items--small {
+    font-size: $small-font-size;
+
+    > li {
+        padding: 0 12px;
+
+        &:before {
+            height: 80%;
+            top: 10%;
         }
     }
 }
@@ -575,6 +593,23 @@ height: 48px;
     }
 }
 
+.extended-header {
+    &__container {
+        padding: 0 0 0 75px;
+        position: relative;
+    }
+
+    &__extra-info-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    &__subtitle-container {
+        padding: 6px 0 0 0;
+    }
+}
+
 .section-header {
 padding: 0 0 32px 0;
 text-align: left;
@@ -596,10 +631,41 @@ font-family: $sans-serif-font-family;
     font-size: $larger-font-size;
     font-weight: 700;
 }
+.small-title--small {
+    font-size: $main-font-size;
+}
 
 /*** headers-end ***/
 
 /***** TABLES *****/
+
+.simple-table {
+    font-size: $very-small-font-size-00;
+    width: 100%;
+
+    &__row {
+        padding: 4px 0;
+
+        &:nth-child(2n + 1) {
+            background: $light-color-06;
+        }
+    }
+}
+.simple-table--with-indent {
+    .simple-table__row {
+        padding-left: 75px;
+    }
+}
+
+.simple-table-row {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    &__cell {
+        width: 120px;
+    }
+}
 
 .spectacular-table {
     &__row {
@@ -1189,6 +1255,131 @@ max-width: 300px;
     height: 100%;
     //background: rgba(255, 255, 255, .8);
     display: none;
+    }
+}
+
+.bookmarks-section {
+border: 1px solid $dark-color-05;
+
+    &__container {
+        display: flex;
+        align-items: stretch;
+    }
+
+    &__bookmarks-container {
+        width: 26%;
+        padding: 24px 0;
+        border-right: 1px solid $light-color-05;
+        @include box-sizing(border-box);
+    }
+
+    &__content-container {
+        width: 74%;
+        padding: 32px 48px;
+        @include box-sizing(border-box);
+    }
+}
+
+.common-bookmark {
+    padding: 16px 24px;
+    font-size: $small-font-size;
+    cursor: pointer;
+    @include transition(all .2s linear);
+    position: relative;
+
+    &:before {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 4px;
+        height: 100%;
+        opacity: 0;
+        @include transition(all .2s linear);
+        background: $secondary-color;
+    }
+
+    &:hover {
+        background: $secondary-color-05;
+    }
+
+    &__subcontent {
+        font-size: $very-small-font-size-00;
+        color: $dark-color-05;
+        padding: 6px 0 0 0;
+    }
+}
+.common-bookmark--active {
+    background: $secondary-color-05;
+
+    &:before {
+        opacity: 1;
+    }
+}
+.common-bookmark--signed-up {
+    background: $primary-color;
+    color: $light-color;
+
+    .common-bookmark__subcontent {
+        color: $light-color;
+    }
+
+    &:hover {
+        background: $primary-color;
+    }
+}
+
+
+.course-section {
+    &__row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 24px 0 0 0;
+
+        &:first-child {
+            padding-top: 0;
+        }
+    }
+    &__row--bottom {
+        align-items: flex-end;
+    }
+
+    &__subrow {
+        padding: 16px 0 0 0;
+    }
+
+    &__main-container {
+        width: 55%;
+    }
+
+    &__details-container {
+        text-align: right;
+        width: 45%;
+    }
+}
+
+.courses-list {
+    > li {
+        padding: 30px 0 24px 0;
+        border-bottom: 1px solid $light-color-05;
+
+        &:first-child {
+            padding-top: 0;
+        }
+    }
+}
+
+.descripted-label {
+    font-size: $small-font-size;
+
+    &__header {
+        padding: 0 0 4px 0;
+    }
+
+    &__content {
+        font-weight: 500;
     }
 }
 
@@ -2575,6 +2766,13 @@ overflow: hidden;
         }
     }
 }
+.button--flat {
+    .button__wrapper {
+        padding: 6px 24px 6px 24px;
+    }
+}
+
+
 .button--primary {
     .button__wrapper {
         &:before {

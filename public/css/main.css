@@ -181,8 +181,6 @@
 
 .bookmarks-manager {
   margin: 0 auto; }
-  .bookmarks-manager .bookmarks-manager__bookmarks {
-    text-align: center; }
   .bookmarks-manager .bookmarks-manager__bookmark-container {
     display: block; }
   .bookmarks-manager .bookmarks-manager__bookmark {
@@ -2340,8 +2338,12 @@ ul {
       height: 90%;
       width: 1px;
       background: #000; }
-    .horizontal-items > li:first-child:before {
-      display: none; }
+    .horizontal-items > li:first-child {
+      padding-left: 0; }
+      .horizontal-items > li:first-child:before {
+        display: none; }
+    .horizontal-items > li:last-child {
+      padding-right: 0; }
   .horizontal-items__distinguished {
     font-weight: 700; }
   .horizontal-items__link {
@@ -2354,6 +2356,14 @@ ul {
     cursor: pointer; }
     .horizontal-items__link:hover {
       color: #F5C794; }
+
+.horizontal-items--small {
+  font-size: 12px; }
+  .horizontal-items--small > li {
+    padding: 0 12px; }
+    .horizontal-items--small > li:before {
+      height: 80%;
+      top: 10%; }
 
 /*** lists-end ***/
 /***** ICONS *****/
@@ -2432,6 +2442,16 @@ ul {
 .simple-header__subtitle-container {
   padding: 8px 0 4px 0; }
 
+.extended-header__container {
+  padding: 0 0 0 75px;
+  position: relative; }
+.extended-header__extra-info-container {
+  position: absolute;
+  top: 0;
+  left: 0; }
+.extended-header__subtitle-container {
+  padding: 6px 0 0 0; }
+
 .section-header {
   padding: 0 0 32px 0;
   text-align: left;
@@ -2450,8 +2470,29 @@ ul {
   font-size: 16px;
   font-weight: 700; }
 
+.small-title--small {
+  font-size: 14px; }
+
 /*** headers-end ***/
 /***** TABLES *****/
+.simple-table {
+  font-size: 11px;
+  width: 100%; }
+  .simple-table__row {
+    padding: 4px 0; }
+    .simple-table__row:nth-child(2n + 1) {
+      background: #EEEEEE; }
+
+.simple-table--with-indent .simple-table__row {
+  padding-left: 75px; }
+
+.simple-table-row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center; }
+  .simple-table-row__cell {
+    width: 120px; }
+
 .spectacular-table__row {
   padding: 10px 0; }
 
@@ -2881,6 +2922,98 @@ ul {
   width: 100%;
   height: 100%;
   display: none; }
+
+.bookmarks-section {
+  border: 1px solid #444444; }
+  .bookmarks-section__container {
+    display: flex;
+    align-items: stretch; }
+  .bookmarks-section__bookmarks-container {
+    width: 26%;
+    padding: 24px 0;
+    border-right: 1px solid #AAAAAA;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box; }
+  .bookmarks-section__content-container {
+    width: 74%;
+    padding: 32px 48px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box; }
+
+.common-bookmark {
+  padding: 16px 24px;
+  font-size: 12px;
+  cursor: pointer;
+  -webkit-transition: all 0.2s linear;
+  -moz-transition: all 0.2s linear;
+  -o-transition: all 0.2s linear;
+  transition: all 0.2s linear;
+  position: relative; }
+  .common-bookmark:before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 4px;
+    height: 100%;
+    opacity: 0;
+    -webkit-transition: all 0.2s linear;
+    -moz-transition: all 0.2s linear;
+    -o-transition: all 0.2s linear;
+    transition: all 0.2s linear;
+    background: #F5C794; }
+  .common-bookmark:hover {
+    background: #FEF1E2; }
+  .common-bookmark__subcontent {
+    font-size: 11px;
+    color: #444444;
+    padding: 6px 0 0 0; }
+
+.common-bookmark--active {
+  background: #FEF1E2; }
+  .common-bookmark--active:before {
+    opacity: 1; }
+
+.common-bookmark--signed-up {
+  background: #AE2F2B;
+  color: #fff; }
+  .common-bookmark--signed-up .common-bookmark__subcontent {
+    color: #fff; }
+  .common-bookmark--signed-up:hover {
+    background: #AE2F2B; }
+
+.course-section__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 24px 0 0 0; }
+  .course-section__row:first-child {
+    padding-top: 0; }
+.course-section__row--bottom {
+  align-items: flex-end; }
+.course-section__subrow {
+  padding: 16px 0 0 0; }
+.course-section__main-container {
+  width: 55%; }
+.course-section__details-container {
+  text-align: right;
+  width: 45%; }
+
+.courses-list > li {
+  padding: 30px 0 24px 0;
+  border-bottom: 1px solid #AAAAAA; }
+  .courses-list > li:first-child {
+    padding-top: 0; }
+
+.descripted-label {
+  font-size: 12px; }
+  .descripted-label__header {
+    padding: 0 0 4px 0; }
+  .descripted-label__content {
+    font-weight: 500; }
 
 /** modules-end **/
 /***** GOOGLE MAP *****/
@@ -3861,6 +3994,9 @@ ul {
       left: 0; }
     .button:hover .button__wrapper:after {
       opacity: 1; }
+
+.button--flat .button__wrapper {
+  padding: 6px 24px 6px 24px; }
 
 .button--primary .button__wrapper:before {
   background: #AE2F2B; }
