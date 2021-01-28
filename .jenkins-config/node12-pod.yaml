@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+    - name: node12
+      image: node:12
+      command: ["tail", "-f", "/dev/null"]
+      imagePullPolicy: Always
