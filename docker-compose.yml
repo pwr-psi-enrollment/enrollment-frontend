@@ -1,0 +1,11 @@
+version: '3.3'
+services:
+
+  frontend:
+    image: frontend
+    build:
+      context: .
+      dockerfile: frontend.Dockerfile
+    container_name: frontend
+    ports:
+      - 8081:8081
