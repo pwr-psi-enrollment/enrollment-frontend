@@ -1,2 +1,18 @@
 /node_modules
 /package-lock*
+
+
+/enrollment-frontend/.env.local
+/enrollment-frontend/.env.local.php
+/enrollment-frontend/.env.*.local
+/enrollment-frontend/config/secrets/prod/prod.decrypt.private.php
+/enrollment-frontend/public/bundles/
+/enrollment-frontend/var/
+/enrollment-frontend/vendor/
+###< symfony/framework-bundle ###
+
+###> symfony/phpunit-bridge ###
+/enrollment-frontend.phpunit
+/enrollment-frontend.phpunit.result.cache
+/enrollment-frontend/phpunit.xml
+###< symfony/phpunit-bridge ###
