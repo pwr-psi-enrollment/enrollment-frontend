@@ -70,23 +70,92 @@ $(document).ready(function() {
         }
     }
 
+
+
+    // function EnrollmentManager(container, options) {
+    //     this.container = container;
+    //
+    //     this.fieldOfStudy;
+    //
+    //     this.defaultOptions = {
+    //         semestersClass: 'enrollment-manager__semesters'
+    //     };
+    //
+    //     this.options = Hawk.mergeObjects(this.defaultOptions, options);
+    //
+    //     this.setFieldOfStudy = function(fieldOfStudy) {
+    //
+    //     }
+    //
+    //     this.setSemester = function(semester) {
+    //
+    //     }
+    // }
+
+    var html = $('html');
+    var body = $('body');
+
     var pagesManager = new PageManager($('#site-header'), $('#site-content'), {
         routes: {
             main: {
                 header: {
                     path: "/template/site-header",
                     callback: function() {
-                        Student.update('name', "Zuzanna Jurczak");
-                        Student.update('indexNumber', 111222);
+                        requestsManager.post("/api/enrollment-service/student-details", {
+                            token: localStorage.getItem('token')
+                        }, {
+                            onSuccess: function(result) {
+                                if (result.statusCode == 200) {
+                                    Student.update('name', result.bundle.name);
+                                    Student.update('indexNumber', result.bundle.indexNumber);
+                                } else {
+                                    console.log("Błędny tokn");
+                                }
+
+                            }
+                        });
+
+                        // requestsManager.get("/ajax/get-student", {
+                        //     onSuccess: function(result) {
+                        //         Student.update('name', result.bundle.student.name);
+                        //         Student.update('indexNumber', result.bundle.student.indexNumber);
+                        //     }
+                        // });
+
+                        $('.logout-link').click(function() {
+                            localStorage.clear();
+
+                            pagesManager.load("login");
+                        });
                     }
                 },
                 content: {
                     path: "/template/site-main",
                     callback: function() {
-                        var coursesBookmarks = new Hawk.BookmarksManager($('#courses-bookmarks'), {
-                            activeBookmarkClass: 'common-bookmark--active'
+
+
+
+                        html.css({ height: 'auto' });
+                        body.css({ height: 'auto' });
+
+                        console.log({
+                            token: localStorage.getItem('token')
                         });
-                        coursesBookmarks.run();
+
+                        requestsManager.post("/api/enrollment-service/student-details", {
+                            token: localStorage.getItem('token')
+                        }, {
+                           onSuccess: function(result) {
+                               AppComponentManagers.FieldOfStudy.parseItems(result.bundle.fieldsOfStudy, {});
+                           }
+                        });
+
+                        PageHeader.update('title', "Zapisy");
+                        PageHeader.update('firstSubtitle', "Wybierz kierunek");
+
+                        EnrollmentManager.semestersContainer = $('.enrollment-manager__semesters');
+                        EnrollmentManager.fieldsOfStudyContainer = $('.enrollment-manager__fields-of-study');
+                        EnrollmentManager.coursesContainer = $('.enrollment-manager__courses');
                     }
                 }
             },
@@ -94,13 +163,18 @@ $(document).ready(function() {
                 content: {
                     path: "/template/login",
                     callback: function() {
+                        pagesManager.header.html('');
+
+                        html.css({ height: '100%' });
+                        body.css({ height: '100%' });
+
                         var loginFields = [
                             new Hawk.FormField("username", Hawk.formFieldTypes.TEXT, "extended-form-field", true, Hawk.Validator.isNotEmpty),
                             new Hawk.FormField("password", Hawk.formFieldTypes.TEXT, "extended-form-field", true, Hawk.Validator.isNotEmpty)
                         ];
 
                         var loginForm = new Hawk.FormSender('form-login', loginFields, {
-                            ajaxPath: '/ajax/login',
+                            ajaxPath: '/api/auth/login',
                             onCorrect: function(result) {
                                 console.log(result);
 
@@ -123,7 +197,17 @@ $(document).ready(function() {
     //localStorage.removeItem("token");
 
     if (localStorage.token) {
-        pagesManager.load("main");
+        requestsManager.post("/api/enrollment-service/student-details", {
+            token: localStorage.getItem('token')
+        }, {
+            onSuccess: function(result) {
+                if (result.statusCode == 200) {
+                    pagesManager.load("main");
+                } else {
+                    pagesManager.load("login");
+                }
+            }
+        });
     } else {
         pagesManager.load("login");
     }

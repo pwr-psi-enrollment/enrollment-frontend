@@ -20,15 +20,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="44af851d-7b9f-4bb2-824a-ec321d8b6e1d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/enrollment-frontend/src/Controller/AjaxRequestController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/enrollment-frontend/templates/home.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/enrollment-frontend/templates/site-header.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/enrollment-frontend/templates/site-login.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/enrollment-frontend/templates/site-main.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/login.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/enrollment-frontend/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/enrollment-frontend/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/main.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/css/main.css.map" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/main.css.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/login.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/sass/_hawk-variables.scss" beforeDir="false" afterPath="$PROJECT_DIR$/public/sass/_hawk-variables.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/sass/main.scss" beforeDir="false" afterPath="$PROJECT_DIR$/public/sass/main.scss" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,7 +46,7 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/enrollment-frontend" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="PhpWorkspaceProjectConfiguration">
     <include_path>
@@ -187,6 +186,7 @@
       <workItem from="1612812610127" duration="11477000" />
       <workItem from="1612861584172" duration="674000" />
       <workItem from="1612880286728" duration="16537000" />
+      <workItem from="1612913973317" duration="29000" />
     </task>
     <servers />
   </component>

@@ -28,7 +28,11 @@ $tertiary-color: #fff;
 
 $color-graphite: #9CA2A5;
 
-
+$color-lecture: #CF0000;
+$color-exercise: #2AA000;
+$color-project: #7000C8;
+$color-seminar: #FFA724;
+$color-laboratory: #0069B6;
 
 $medium-color: #8010A7; // purple main
 $medium-color-01: #D91E9D; // pink main
@@ -47,7 +51,7 @@ $light-color-03: #6F6F6F;
 $light-color-04: #FAFAFA;
 $light-color-05: #AAAAAA;
 $light-color-06: #EEEEEE;
-
+$light-color-07: #777777;
 
 $light-color-10: #F8F8F8;
 $light-color-11: #fff2dd; // piaskowy jasniejszy
@@ -59,6 +63,7 @@ $light-background: rgba(255, 255, 255, .8);
 
 $grey: #444;
 $error-color: #DB2B39;
+$failure-color: #DB2B39;
 $error-color-01: #fff2f2;
 
 $success-color: #090;

@@ -16,3 +16,7 @@
 /enrollment-frontend.phpunit.result.cache
 /enrollment-frontend/phpunit.xml
 ###< symfony/phpunit-bridge ###
+
+/public/js/node_modules/
+/var/
+/vendor/
