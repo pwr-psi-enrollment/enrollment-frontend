@@ -1088,7 +1088,7 @@ AppComponentManagers.Course = new Hawk.ComponentsManager(AppComponents.Course, '
                     console.log(groupID);
 
                     if (lectureGroup.get('enrolled') == 1) {
-                        requestsManager.post("/api/enrollment-service/student-registrations/" + EnrollmentManager.registration.getID() + "/enrollment/" + groupID, {
+                        requestsManager.delete("/api/enrollment-service/student-registrations/" + EnrollmentManager.registration.getID() + "/enrollment/" + groupID, {
                             //token: localStorage.token
                         }, {
                             headers: {
