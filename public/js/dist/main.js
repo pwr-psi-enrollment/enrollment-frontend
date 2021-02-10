@@ -184,29 +184,66 @@ $(document).ready(function() {
                         html.css({ height: '100%' });
                         body.css({ height: '100%' });
 
+                        var form = $('#form-login');
+
+                        var fields = {
+                            username: form.find('input[name="username"]') ,
+                            password:  form.find('input[name="password"]')
+                        };
+
                         var loginFields = [
                             new Hawk.FormField("username", Hawk.formFieldTypes.TEXT, "extended-form-field", true, Hawk.Validator.isNotEmpty),
                             new Hawk.FormField("password", Hawk.formFieldTypes.TEXT, "extended-form-field", true, Hawk.Validator.isNotEmpty)
                         ];
 
-                        var loginForm = new Hawk.FormSender('form-login', loginFields, {
-                            ajaxPath: '/api/auth/login',
-                            onCorrect: function(result) {
-                                console.log(result);
 
-                                if (typeof result.value != 'undefined') {
-                                    localStorage.setItem("token", result.value);
 
-                                    pagesManager.load("main");
-                                } else {
-                                    loginForm.changeMessage("Błędny login lub hasło");
+                        form.submit(function(e) {
+                            e.preventDefault();
+
+                            requestsManager.post("/api/auth/login", JSON.stringify({
+                                username: fields.username.val(),
+                                password: fields.password.val()
+                            }), {
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                onSuccess: function (result) {
+
+                                    console.log(result);
+
+                                            if (typeof result.value != 'undefined') {
+                                                localStorage.setItem("token", result.value);
+
+                                                pagesManager.load("main");
+                                            } else {
+                                                form.find('.form__info').html("Błędny login lub hasło");
+                                            }
+                                },
+                                onError: function(result) {
+                                    form.find('.form__info').html("Błędny login lub hasło");
                                 }
-                            },
-                            onError: function(result) {
-                                loginForm.changeMessage("Błędny login lub hasło");
-                            }
+                            });
                         });
-                        loginForm.run();
+
+                        // var loginForm = new Hawk.FormSender('form-login', loginFields, {
+                        //     ajaxPath: '/api/auth/login',
+                        //     onCorrect: function(result) {
+                        //         console.log(result);
+                        //
+                        //         if (typeof result.value != 'undefined') {
+                        //             localStorage.setItem("token", result.value);
+                        //
+                        //             pagesManager.load("main");
+                        //         } else {
+                        //             loginForm.changeMessage("Błędny login lub hasło");
+                        //         }
+                        //     },
+                        //     onError: function(result) {
+                        //         loginForm.changeMessage("Błędny login lub hasło");
+                        //     }
+                        // });
+                        // loginForm.run();
                     }
                 }
             }

@@ -1915,42 +1915,34 @@ Hawk.FormSender = function(id, fields, options) {
                 dataType: 'json',
                 success: function(result) {
                     console.log(result);
-                    //if (result.status == Hawk.RequestStatus.SUCCESS) {
-                    that.clear();
-                    // if (that.options.autoDisable) {
-                    //     that.hideButton();
-                    //
-                    //     that.disable();
-                    // }
-                    if (typeof that.options.onCorrect == 'function') {
-                        that.options.onCorrect(result);
+                    if (result.status == Hawk.RequestStatus.SUCCESS) {
+                        that.clear();
+                        if (that.options.autoDisable) {
+                            that.hideButton();
+                            that.disable();
+                        }
+                        if (typeof that.options.onCorrect == 'function') {
+                            that.options.onCorrect(result);
+                        } else {
+                            that.changeMessage(result.message);
+                        }
+                    } else if (result.status == Hawk.RequestStatus.ERROR) {
+                        that.checkFields(result.errorFields);
+                        that.changeMessage(result.message);
+                        if (typeof that.options.onError == 'function') {
+                            that.options.onError(result);
+                        }
                     } else {
-                        //that.changeMessage(result.message);
+                        that.checkFields(result.errorFields);
+                        that.changeMessage(result.message);
+                        if (typeof that.options.onException == 'function') {
+                            that.options.onException(result);
+                        }
                     }
-                    // } else if (result.status == Hawk.RequestStatus.ERROR) {
-                    //     that.checkFields(result.errorFields);
-                    //
-                    //     that.changeMessage(result.message);
-                    //
-                    //     if (typeof that.options.onError == 'function') {
-                    //         that.options.onError(result);
-                    //     }
-                    // } else {
-                    //     that.checkFields(result.errorFields);
-                    //
-                    //     that.changeMessage(result.message);
-                    //
-                    //     if (typeof that.options.onException == 'function') {
-                    //         that.options.onException(result);
-                    //     }
-                    // }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     console.log(jqXHR.responseText);
-                    //that.changeMessage("Wystąpił nieoczekiwany problem podczas przetwarzania formularza. Proszę spróbować ponownie później.");
-                    if (typeof that.options.onError == 'function') {
-                        that.options.onError(jqXHR.responseText);
-                    }
+                    that.changeMessage("Wystąpił nieoczekiwany problem podczas przetwarzania formularza. Proszę spróbować ponownie później.");
                     console.log(errorThrown);
                     if (typeof that.options.onException == 'function') {
                         that.options.onException();
@@ -3991,9 +3983,9 @@ AppComponentManagers.Course = new Hawk.ComponentsManager(AppComponents.Course, '
                             }
                         });
                     } else {
-                        requestsManager.post("/api/student-registrations/" + EnrollmentManager.registration.getID() + "/enroll", {
+                        requestsManager.post("/api/student-registrations/" + EnrollmentManager.registration.getID() + "/enroll", JSON.stringify({
                             groupID: parseInt(groupID)
-                        }, {
+                        }), {
                             headers: {
                                 "Content-Type": "application/json",
                                 "Authorization": "Bearer " + localStorage.getItem('token')

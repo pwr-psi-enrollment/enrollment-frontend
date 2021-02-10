@@ -28,8 +28,12 @@ class AjaxRequestController extends AbstractController {
      * @Route("/api/auth/login")
      */
     public function login(Request $request) {
-        $username = $request->get('username');
-        $password = $request->get('password');
+        //var_dump($request->getContent());
+
+        $content = json_decode($request->getContent(), true);
+
+        $username = $content['username'];
+        $password = $content['password'];
 
         $requestManager = new JSONRequestsManager();
 
@@ -354,9 +358,9 @@ class AjaxRequestController extends AbstractController {
 //        $headers[] = 'Authorization: Bearer ' . $request->get('token');
 
 
-        $content = explode('=', $request->getContent());
+        $content = json_decode($request->getContent(), true);
 
-        $groupID = $content[1];
+        $groupID = $content['groupID'];
 
         $headers[] = 'Content-Type: ' . $request->headers->get('content-type');
         $headers[] = 'Authorization: ' . $request->headers->get('authorization');
