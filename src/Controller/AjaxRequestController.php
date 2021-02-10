@@ -364,7 +364,7 @@ class AjaxRequestController extends AbstractController {
     }
 
     /**
-     * @Route("/api/student-registrations/{studentRegistrationId}/enroll")
+     * @Route("/api/enrollment-service/student-registrations/{studentRegistrationId}/enroll")
      */
     public function enroll($studentRegistrationId, Request $request)
     {
