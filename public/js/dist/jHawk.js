@@ -2543,8 +2543,8 @@ Hawk.AjaxRequestsManager = function(options) {
         onComplete: function() {}
     };
     this.options = Hawk.mergeObjects(this.defaultOptions, options);
-    this.delete = function(path, options) {
-        this.sendRequest(path, Hawk.AjaxRequestType.DELETE, JSON.stringify({}), options);
+    this.delete = function(path, bundle, options) {
+        this.sendRequest(path, Hawk.AjaxRequestType.DELETE, bundle, options);
     }
     this.post = function(path, bundle, options) {
         this.sendRequest(path, Hawk.AjaxRequestType.POST, bundle, options);
