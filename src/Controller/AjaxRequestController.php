@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Requests\JSONRequestsManager;
 use App\Requests\RequestStatus;
+use Exception;
 use http\Client;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpClient\HttpClient;
@@ -109,22 +110,32 @@ class AjaxRequestController extends AbstractController {
 
         //var_dump($request->headers);
 
-        $result = $request->getContent();
+        //$result = $request->getContent();
 
-        $response = $this->client->request('GET', 'https://3.10.51.120/api/enrollment-service/student-details', [
-            'headers' => $headers
-        ]);
+        try {
+            $response = $this->client->request('GET', 'https://3.10.51.120/api/enrollment-service/student-details', [
+                'headers' => $headers
+            ]);
 
-        $statusCode = $response->getStatusCode();
+            $statusCode = $response->getStatusCode();
 
-        $rawResult = $response->getContent();
+            $rawResult = $response->getContent();
 
-        $result = json_decode($rawResult, true);
+            $result = json_decode($rawResult, true);
 
-        $jsonResponse = new JsonResponse($result);
-        $jsonResponse->setStatusCode($statusCode);
+            $jsonResponse = new JsonResponse($result);
+            $jsonResponse->setStatusCode($statusCode);
 
-        return $jsonResponse;
+            return $jsonResponse;
+        } catch (Exception $e) {
+            $result = json_decode("", true);
+
+            $jsonResponse = new JsonResponse($result);
+            $jsonResponse->setStatusCode(401);
+
+            return $jsonResponse;
+        }
+
 
 //        if ($statusCode == 200) {
 //            $rawResult = $response->getContent();

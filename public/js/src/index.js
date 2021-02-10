@@ -979,7 +979,7 @@ AppComponentManagers.Semester = new Hawk.ComponentsManager(AppComponents.Semeste
 
             component.update('active', 1);
 
-            requestsManager.post("/api/enrollment-service/student-registrations?registeredId=" + EnrollmentManager.fieldOfStudy.get('registeredId') + "&semesterId=" + component.getID(), {
+            requestsManager.get("/api/enrollment-service/student-registrations?registeredId=" + EnrollmentManager.fieldOfStudy.get('registeredId') + "&semesterId=" + component.getID(), {
                 //token: localStorage.token
                 }, {
                 headers: {
@@ -1018,7 +1018,7 @@ AppComponentManagers.Registration = new Hawk.ComponentsManager(AppComponents.Reg
 
             component.update('active', 1);
 
-            requestsManager.post("/api/enrollment-service/student-registrations/" + component.getID() + "/courses", {
+            requestsManager.get("/api/enrollment-service/student-registrations/" + component.getID() + "/courses", {
                // token: localStorage.token
             }, {
                 headers: {

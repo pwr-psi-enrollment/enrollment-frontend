@@ -109,7 +109,7 @@ $(document).ready(function() {
                 header: {
                     path: "/templates/site-header.html",
                     callback: function() {
-                        requestsManager.post("/api/enrollment-service/student-details", {
+                        requestsManager.get("/api/enrollment-service/student-details", {
                             //token: localStorage.getItem('token')
                         }, {
                             headers: {
@@ -152,7 +152,7 @@ $(document).ready(function() {
                             token: localStorage.getItem('token')
                         });
 
-                        requestsManager.post("/api/enrollment-service/student-details", {
+                        requestsManager.get("/api/enrollment-service/student-details", {
 
                         }, {
                             headers: {
@@ -253,7 +253,7 @@ $(document).ready(function() {
     //localStorage.removeItem("token");
 
     if (localStorage.token) {
-        requestsManager.post("/api/enrollment-service/student-details", {
+        requestsManager.get("/api/enrollment-service/student-details", {
             //token: localStorage.getItem('token')
         }, {
             headers: {
