@@ -119,18 +119,22 @@ class AjaxRequestController extends AbstractController {
 
             $statusCode = $response->getStatusCode();
 
-            $rawResult = $response->getContent();
+            if ($statusCode == 200) {
+                $rawResult = $response->getContent();
 
-            $result = json_decode($rawResult, true);
+                $result = json_decode($rawResult, true);
+            } else {
+                $result = [];
+            }
+
 
             $jsonResponse = new JsonResponse($result);
             $jsonResponse->setStatusCode($statusCode);
 
             return $jsonResponse;
         } catch (Exception $e) {
-            $result = json_decode("", true);
 
-            $jsonResponse = new JsonResponse($result);
+            $jsonResponse = new JsonResponse();
             $jsonResponse->setStatusCode(401);
 
             return $jsonResponse;

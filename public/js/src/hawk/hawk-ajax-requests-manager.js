@@ -28,8 +28,8 @@ Hawk.AjaxRequestsManager = function(options) {
         this.sendRequest(path, Hawk.AjaxRequestType.POST, bundle, options);
     }
 
-    this.get = function(path, options) {
-        this.sendRequest(path, Hawk.AjaxRequestType.GET, {}, options);
+    this.get = function(path, bundle, options) {
+        this.sendRequest(path, Hawk.AjaxRequestType.GET, bundle, options);
     }
 
     this.sendRequest = function(path, type, bundle, options) {
@@ -52,12 +52,10 @@ Hawk.AjaxRequestsManager = function(options) {
         this.ajaxRequest = $.ajax({
             type: type,
             url: path,
-            contentType: "application/json",
+            //contentType: "application/json",
             dataType: "json",
             data: bundle,
-            headers: Object.assign({
-                //contentType: 'application/json'
-            }, headers),
+            headers: headers,
             //traditional: true,
             success: function(result) {
                 console.log(result);

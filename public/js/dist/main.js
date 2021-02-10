@@ -50,6 +50,8 @@ $(document).ready(function() {
         this.load = function(route) {
             var page = this.getRoute(route);
 
+            console.log(page);
+
             if (typeof page.header != 'undefined') {
                 that.header.load(page.header.path, function() {
                     page.header.callback();
@@ -179,6 +181,8 @@ $(document).ready(function() {
                 content: {
                     path: "/templates/site-login.html",
                     callback: function() {
+                        console.log("No halo");
+
                         pagesManager.header.html('');
 
                         html.css({ height: '100%' });
@@ -212,13 +216,13 @@ $(document).ready(function() {
 
                                     console.log(result);
 
-                                            if (typeof result.value != 'undefined') {
-                                                localStorage.setItem("token", result.value);
+                                    if (typeof result.value != 'undefined') {
+                                        localStorage.setItem("token", result.value);
 
-                                                pagesManager.load("main");
-                                            } else {
-                                                form.find('.form__info').html("Błędny login lub hasło");
-                                            }
+                                        pagesManager.load("main");
+                                    } else {
+                                        form.find('.form__info').html("Błędny login lub hasło");
+                                    }
                                 },
                                 onError: function(result) {
                                     form.find('.form__info').html("Błędny login lub hasło");
@@ -264,6 +268,7 @@ $(document).ready(function() {
                 pagesManager.load("main");
             },
             onError: function(result) {
+                console.log("HALO");
                 pagesManager.load("login");
             }
         });

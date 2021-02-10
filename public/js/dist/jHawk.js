@@ -2549,8 +2549,8 @@ Hawk.AjaxRequestsManager = function(options) {
     this.post = function(path, bundle, options) {
         this.sendRequest(path, Hawk.AjaxRequestType.POST, bundle, options);
     }
-    this.get = function(path, options) {
-        this.sendRequest(path, Hawk.AjaxRequestType.GET, {}, options);
+    this.get = function(path, bundle, options) {
+        this.sendRequest(path, Hawk.AjaxRequestType.GET, bundle, options);
     }
     this.sendRequest = function(path, type, bundle, options) {
         // if (this.ajaxRequestWorking) {
@@ -2567,12 +2567,10 @@ Hawk.AjaxRequestsManager = function(options) {
         this.ajaxRequest = $.ajax({
             type: type,
             url: path,
-            contentType: "application/json",
+            //contentType: "application/json",
             dataType: "json",
             data: bundle,
-            headers: Object.assign({
-                //contentType: 'application/json'
-            }, headers),
+            headers: headers,
             //traditional: true,
             success: function(result) {
                 console.log(result);
@@ -3885,7 +3883,7 @@ AppComponentManagers.Semester = new Hawk.ComponentsManager(AppComponents.Semeste
             EnrollmentManager.semester = component;
             AppComponents.Semester.updateAll('active', 0);
             component.update('active', 1);
-            requestsManager.post("/api/enrollment-service/student-registrations?registeredId=" + EnrollmentManager.fieldOfStudy.get('registeredId') + "&semesterId=" + component.getID(), {
+            requestsManager.get("/api/enrollment-service/student-registrations?registeredId=" + EnrollmentManager.fieldOfStudy.get('registeredId') + "&semesterId=" + component.getID(), {
                 //token: localStorage.token
             }, {
                 headers: {
@@ -3917,7 +3915,7 @@ AppComponentManagers.Registration = new Hawk.ComponentsManager(AppComponents.Reg
             EnrollmentManager.registration = component;
             AppComponents.Registration.updateAll('active', 0);
             component.update('active', 1);
-            requestsManager.post("/api/enrollment-service/student-registrations/" + component.getID() + "/courses", {
+            requestsManager.get("/api/enrollment-service/student-registrations/" + component.getID() + "/courses", {
                 // token: localStorage.token
             }, {
                 headers: {
