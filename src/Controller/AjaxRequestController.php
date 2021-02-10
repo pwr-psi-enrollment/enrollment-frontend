@@ -344,4 +344,56 @@ class AjaxRequestController extends AbstractController {
             'debug' => $debug
         ]);
     }
+
+    /**
+     * @Route("/enrollment-service/student-registrations/{studentRegistrationId}/enrollment/{groupId}")
+     */
+    public function roll($studentRegistrationId, $groupId, Request $request)
+    {
+
+        $headers[] = 'Content-Type: application/json';
+        $headers[] = 'Authorization: Bearer ' . $request->get('token');
+
+        //$studentRegistrationId = $request->query->get('studentRegistrationId');
+        //$groupID = $request->get('groupID');
+
+        $debug = [];
+
+        $debug[] = json_encode([
+            'groupId' => intval($groupId)
+        ]);
+
+        //var_dump ($debug);
+
+        $response = $this->client->request('DELETE', 'https://3.10.51.120/api/enrollment-service/student-registrations/' . $studentRegistrationId . '/enrollment/' . $groupId, [
+            'headers' => $headers
+        ]);
+
+        $statusCode = $response->getStatusCode();
+
+        $result = [];
+
+        if ($statusCode == 200) {
+            $rawResult = $response->getContent();
+
+            $result = json_decode($rawResult, true);
+
+            $status = RequestStatus::SUCCESS;
+            $message = "Sukces";
+        } else {
+            $status = RequestStatus::ERROR;
+            $message = "Błąd.";
+
+            $result = $response->getContent();
+        }
+
+        return new JsonResponse([
+            'status' => $status,
+            'message' => $message,
+            'bundle' => $result,
+            'statusCode' => $statusCode,
+            'headers' => $headers,
+            'debug' => $debug
+        ]);
+    }
 }

@@ -3082,6 +3082,21 @@ AppConstants.CourseType = {
         } else {
             return "";
         }
+    },
+    getSymbol: function(key) {
+        if (key == this.LECTURE) {
+            return "W";
+        } else if (key == this.EXERCISE) {
+            return "Ć";
+        } else if (key == this.LABORATORY) {
+            return "L";
+        } else if (key == this.PROJECT) {
+            return "P";
+        } else if (key == this.SEMINAR) {
+            return "S";
+        } else {
+            return "";
+        }
     }
 }
 AppConstants.RegistrationDestination = {
@@ -3108,6 +3123,29 @@ AppConstants.RegistrationKind = {
         } else {
             return "";
         }
+    }
+}
+const Schedule = {
+    groups: {},
+    container: null,
+    getCell: function(group) {
+        var row = this.container.find('.schedule__row[data-time="' + group.get('start') + '"]');
+        console.log("ROW");
+        console.log(row);
+        var cell = row.find('.schedule__cell').eq(group.get('dayOfWeek'));
+        return cell;
+    },
+    putGroup: function(group) {
+        this.groups[group.getID()] = group;
+        var cell = this.getCell(group);
+        console.log("CELL", cell);
+        cell.html(AppComponents.LectureGroup.getHTML(group));
+        group.refreshView();
+    },
+    removeGroup: function(group) {
+        var cell = this.getCell(group);
+        cell.html('');
+        delete this.groups[group.getID()];
     }
 }
 const AppComponents = {};
@@ -3526,6 +3564,8 @@ AppComponents.Course = new Hawk.ComponentClass('cmpt-course', {
     let groups = [];
     for (let i in groupsData) {
         const lectureGroup = AppComponents.LectureGroup.createFromJSON(AppComponents.LectureGroup.prepareJSON(groupsData[i]));
+        lectureGroup.set('name', json.name);
+        lectureGroup.set('type', json.type);
         groups[lectureGroup.getID()] = lectureGroup;
     }
     return {
@@ -3555,7 +3595,30 @@ AppComponents.LectureGroup = new Hawk.ComponentClass('cmpt-lecture-group', {
     allSeats: 0,
     enrolled: false
 }, {}, {
-    properties: {},
+    properties: {
+        dayOfWeekName: function(component) {
+            var day = component.get('dayOfWeek');
+            if (day == 1) {
+                return "pn";
+            } else if (day == 2) {
+                return "wt";
+            } else if (day == 3) {
+                return "śr";
+            } else if (day == 4) {
+                return "czw";
+            } else if (day == 5) {
+                return "pt";
+            } else {
+                return "";
+            }
+        },
+        courseType: function(component) {
+            return AppConstants.CourseType.getPolishName(component.get('type'));
+        },
+        courseSymbol: function(component) {
+            return AppConstants.CourseType.getSymbol(component.get('type'));
+        }
+    },
     methods: {
         checkButton: function(component) {
             var buttonContent = component.getElement('button').find('.button__inner');
@@ -3563,6 +3626,27 @@ AppComponents.LectureGroup = new Hawk.ComponentClass('cmpt-lecture-group', {
                 buttonContent.html("Wypisz");
             } else {
                 buttonContent.html("Zapisz");
+            }
+        },
+        checkType: function(component) {
+            var symbol = component.getElement('courseSymbol');
+            var container = component.getContainer();
+            var type = component.get('type');
+            if (type == AppConstants.CourseType.EXERCISE) {
+                symbol.addClass('classes-symbol--exercise');
+                container.addClass('schedule-item--exercise');
+            } else if (type == AppConstants.CourseType.LABORATORY) {
+                symbol.addClass('classes-symbol--laboratory');
+                container.addClass('schedule-item--laboratory');
+            } else if (type == AppConstants.CourseType.LECTURE) {
+                symbol.addClass('classes-symbol--lecture');
+                container.addClass('schedule-item--lecture');
+            } else if (type == AppConstants.CourseType.SEMINAR) {
+                symbol.addClass('classes-symbol--seminar');
+                container.addClass('schedule-item--seminar');
+            } else if (type == AppConstants.CourseType.PROJECT) {
+                symbol.addClass('classes-symbol--project');
+                container.addClass('schedule-item--project');
             }
         }
     },
@@ -3580,115 +3664,155 @@ AppComponents.LectureGroup = new Hawk.ComponentClass('cmpt-lecture-group', {
             enrolled: json.enrolled
         };
     },
-    getHTML: function(component) {
-        var result = `<article class="course-section cmpt-lecture-group" data-component-id="${component.getID()}">
-                                <div class="course-section__wrapper">
-                                    <div class="course-section__row">
-                                        <div class="course-section__main-container">
-                                            <header class="extended-header">
-                                                <div class="extended-header__container">
-                                                    <div class="extended-header__extra-info-container cmpt-lecture-group__code">
-                                                        
-                                                    </div>
+    getHTML: function(component, type) {
+        if (typeof type != 'undefined' && type == 'list') {
+            return `<article class="course-section cmpt-lecture-group" data-component-id="${component.getID()}">
+                            <div class="course-section__wrapper">
+                                <div class="course-section__row">
+                                    <div class="course-section__main-container">
+                                        <header class="extended-header">
+                                            <div class="extended-header__container">
+                                                <div class="extended-header__extra-info-container cmpt-lecture-group__code">
+                                                    
+                                                </div>
 
-                                                    <div class="extended-header__main-container">
-                                                        <h5 class="small-title small-title--small cmpt-course__name"></h5>
+                                                <div class="extended-header__main-container">
+                                                    <h5 class="small-title small-title--small cmpt-course__name"></h5>
 
-                                                        <div class="extended-header__subtitle-container">
-                                                            <ul class="horizontal-items horizontal-items--small">
-                                                                <li class="cmpt-course__courseType">
-                                                                    
-                                                                </li>
+                                                    <div class="extended-header__subtitle-container">
+                                                        <ul class="horizontal-items horizontal-items--small">
+                                                            <li class="cmpt-course__courseType">
+                                                                
+                                                            </li>
 
-                                                                <li class="cmpt-lecture-group__lecturer">
-                                                                    
-                                                                </li>
-                                                            </ul>
-                                                        </div>
+                                                            <li class="cmpt-lecture-group__lecturer">
+                                                                
+                                                            </li>
+                                                        </ul>
                                                     </div>
                                                 </div>
-                                            </header>
-                                        </div>
-
-                                        <div class="course-section__details-container">
-                                            <article class="descripted-label">
-                                                <header class="descripted-label__header">
-                                                    Termin, miejsce
-                                                </header>
-
-                                                <div class="descripted-label__content">
-                                                    <span class="cmpt-lecture-group__dayOfWeekName"></span> <span class="cmpt-lecture-group__start"></span>-<span class="cmpt-lecture-group__end"></span>, <span class="cmpt-lecture-group__room"></span>
-                                                </div>
-                                            </article>
-                                        </div>
+                                            </div>
+                                        </header>
                                     </div>
 
-                                    <div class="course-section__row course-section__row--bottom">
-                                        <div class="course-section__main-container">
-                                            <section class="simple-table simple-table--with-indent">
-                                                <div class="simple-table__row">
-                                                    <div class="simple-table-row">
-                                                        <div class="simple-table-row__cell simple-table-row__cell--title">
-                                                            Punkty ECTS:
-                                                        </div>
+                                    <div class="course-section__details-container">
+                                        <article class="descripted-label">
+                                            <header class="descripted-label__header">
+                                                Termin, miejsce
+                                            </header>
 
-                                                        <div class="simple-table-row__cell cmpt-course__ects">
-                                                            
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="simple-table__row">
-                                                    <div class="simple-table-row">
-                                                        <div class="simple-table-row__cell simple-table-row__cell--title">
-                                                            Godziny ZZU:
-                                                        </div>
-
-                                                        <div class="simple-table-row__cell cmpt-course__zzu">
-                                                            
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="simple-table__row">
-                                                    <div class="simple-table-row">
-                                                        <div class="simple-table-row__cell simple-table-row__cell--title">
-                                                            Kod kursu:
-                                                        </div>
-
-                                                        <div class="simple-table-row__cell cmpt-lecture-group__code">
-                                                            
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </section>
-                                        </div>
-
-                                        <div class="course-section__details-container">
-                                            <article class="descripted-label">
-                                                <header class="descripted-label__header">
-                                                    Liczba miejsc
-                                                </header>
-
-                                                <div class="descripted-label__content">
-                                                    <span class="cmpt-lecture-group__takenSeats"></span>/<span class="cmpt-lecture-group__allSeats"></span>
-                                                </div>
-                                            </article>
-
-                                            <div class="course-section__subrow">
-                                                <button class="button button--flat cmpt-course__button cmpt-lecture-group__button" type="button" data-group-id="${component.getID()}">
-                                                    <div class="button__wrapper">
-                                                        <div class="button__inner">
-                                                            Zapisz
-                                                        </div>
-                                                    </div>
-                                                </button>
+                                            <div class="descripted-label__content">
+                                                <span class="cmpt-lecture-group__dayOfWeekName"></span> <span class="cmpt-lecture-group__start"></span>-<span class="cmpt-lecture-group__end"></span>, <span class="cmpt-lecture-group__room"></span>
                                             </div>
+                                        </article>
+                                    </div>
+                                </div>
+
+                                <div class="course-section__row course-section__row--bottom">
+                                    <div class="course-section__main-container">
+                                        <section class="simple-table simple-table--with-indent">
+                                            <div class="simple-table__row">
+                                                <div class="simple-table-row">
+                                                    <div class="simple-table-row__cell simple-table-row__cell--title">
+                                                        Punkty ECTS:
+                                                    </div>
+
+                                                    <div class="simple-table-row__cell cmpt-course__ects">
+                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="simple-table__row">
+                                                <div class="simple-table-row">
+                                                    <div class="simple-table-row__cell simple-table-row__cell--title">
+                                                        Godziny ZZU:
+                                                    </div>
+
+                                                    <div class="simple-table-row__cell cmpt-course__zzu">
+                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="simple-table__row">
+                                                <div class="simple-table-row">
+                                                    <div class="simple-table-row__cell simple-table-row__cell--title">
+                                                        Kod kursu:
+                                                    </div>
+
+                                                    <div class="simple-table-row__cell cmpt-lecture-group__code">
+                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </section>
+                                    </div>
+
+                                    <div class="course-section__details-container">
+                                        <article class="descripted-label">
+                                            <header class="descripted-label__header">
+                                                Liczba miejsc
+                                            </header>
+
+                                            <div class="descripted-label__content">
+                                                <span class="cmpt-lecture-group__takenSeats"></span>/<span class="cmpt-lecture-group__allSeats"></span>
+                                            </div>
+                                        </article>
+
+                                        <div class="course-section__subrow">
+                                            <button class="button button--flat cmpt-course__button cmpt-lecture-group__button" type="button" data-group-id="${component.getID()}">
+                                                <div class="button__wrapper">
+                                                    <div class="button__inner">
+                                                        Zapisz
+                                                    </div>
+                                                </div>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
-                            </article>`;
-        return result;
+                            </div>
+                        </article>`;
+        } else {
+            return `<article class="schedule-item cmpt-lecture-group" data-component-id="${component.getID()}">
+                            <div class="schedule-item__inner">
+                                <header class="schedule-item__header">
+                                    <div class="schedule-item__title-container">
+                                        <h4 class="tiny-title cmpt-lecture-group__name"></h4>
+                                    </div>
+
+                                    <div class="schedule-item__place-container">
+                                        <div class="text text--tiny text--compact cmpt-lecture-group__room">
+                                            <ul class="plain-list">
+                                                <li>D-20</li>
+                                                <li>s. 30</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </header>
+
+                                <div class="schedule-item__row">
+                                    <div class="schedule-item__row-item">
+                                        <div class="person-label cmpt-lecture-group__lecturer">
+                                            <span class="person-label__title">
+                                                Dr inż.
+                                            </span>
+
+                                            <span class="person-label__name">
+                                                
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="schedule-item__row-item">
+                                        <div class="classes-symbol cmpt-lecture-group__courseSymbol">
+                                            W
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>`;
+        }
     }
 }, function(json) {
     let result = [];
@@ -3796,6 +3920,9 @@ AppComponentManagers.Registration = new Hawk.ComponentsManager(AppComponents.Reg
                     EnrollmentManager.coursesContainer.velocity("slideDown");
                     console.log();
                     AppComponentManagers.Course.parseItems(result.bundle.courses, {});
+                    Hawk.scrollToElement({
+                        anchor: "#courses-anchor"
+                    });
                 }
             });
         });
@@ -3818,26 +3945,47 @@ AppComponentManagers.Course = new Hawk.ComponentsManager(AppComponents.Course, '
             console.log(current);
             for (var j in groups) {
                 var currentGroup = groups[j];
-                current.placeSubcomponent('groups', groups[j], "<li>" + AppComponents.LectureGroup.getHTML(currentGroup) + "</li>");
+                if (currentGroup.get('enrolled') == 1) {
+                    console.log(AppComponents.LectureGroup.getInstance(currentGroup.getID()));
+                    Schedule.putGroup(AppComponents.LectureGroup.getInstance(currentGroup.getID()));
+                    console.log("ZAPISANY: " + currentGroup.get('start'));
+                }
+                current.placeSubcomponent('groups', currentGroup, "<li>" + AppComponents.LectureGroup.getHTML(currentGroup, 'list') + "</li>");
                 var button = currentGroup.getElement('button');
                 button.click(function() {
                     console.log(currentGroup.getID());
                     var groupID = $(this).attr('data-group-id');
                     var courseID = $(this).attr('data-course-id');
-                    requestsManager.post("/student-registrations/" + EnrollmentManager.registration.getID() + "/enroll", {
-                        token: localStorage.token,
-                        groupID: groupID,
-                    }, {
-                        onSuccess: function(result) {
-                            var lectureGroup = AppComponents.LectureGroup.getInstance(groupID);
-                            lectureGroup.update('enrolled', true);
-                            lectureGroup.update('takenSeats', result.bundle.takenSeats);
-                            var course = AppComponents.Course.getInstance(courseID);
-                            course.update('enrolled', true);
-                            EnrollmentManager.semester.update('pointsECTS', parseInt(EnrollmentManager.semester.get('pointsECTS')) + course.get('ects'));
-                            EnrollmentManager.semester.update('hoursZZU', parseInt(EnrollmentManager.semester.get('hoursZZU')) + course.get('zzu'));
-                        }
-                    });
+                    var lectureGroup = AppComponents.LectureGroup.getInstance(groupID);
+                    var course = AppComponents.Course.getInstance(courseID);
+                    if (lectureGroup.get('enrolled') == 1) {
+                        requestsManager.post("/enrollment-service/student-registrations/" + EnrollmentManager.registration.getID() + "/enrollment/" + groupID, {
+                            token: localStorage.token
+                        }, {
+                            onSuccess: function(result) {
+                                lectureGroup.update('enrolled', false);
+                                lectureGroup.update('takenSeats', result.bundle.takenSeats);
+                                course.update('enrolled', false);
+                                Schedule.removeGroup(lectureGroup);
+                                EnrollmentManager.semester.update('pointsECTS', parseInt(EnrollmentManager.semester.get('pointsECTS')) - course.get('ects'));
+                                EnrollmentManager.semester.update('hoursZZU', parseInt(EnrollmentManager.semester.get('hoursZZU')) - course.get('zzu'));
+                            }
+                        });
+                    } else {
+                        requestsManager.post("/student-registrations/" + EnrollmentManager.registration.getID() + "/enroll", {
+                            token: localStorage.token,
+                            groupID: groupID,
+                        }, {
+                            onSuccess: function(result) {
+                                lectureGroup.update('enrolled', true);
+                                lectureGroup.update('takenSeats', result.bundle.takenSeats);
+                                course.update('enrolled', true);
+                                Schedule.putGroup(lectureGroup);
+                                EnrollmentManager.semester.update('pointsECTS', parseInt(EnrollmentManager.semester.get('pointsECTS')) + course.get('ects'));
+                                EnrollmentManager.semester.update('hoursZZU', parseInt(EnrollmentManager.semester.get('hoursZZU')) + course.get('zzu'));
+                            }
+                        });
+                    }
                 });
             }
             current.refreshView();

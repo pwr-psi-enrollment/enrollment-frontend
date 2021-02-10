@@ -156,6 +156,8 @@ $(document).ready(function() {
                         EnrollmentManager.semestersContainer = $('.enrollment-manager__semesters');
                         EnrollmentManager.fieldsOfStudyContainer = $('.enrollment-manager__fields-of-study');
                         EnrollmentManager.coursesContainer = $('.enrollment-manager__courses');
+
+                        Schedule.container = $('#schedule');
                     }
                 }
             },

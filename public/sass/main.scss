@@ -1167,6 +1167,7 @@ text-align: center;
 
     &__title-container {
         text-align: left;
+        padding: 0 10px 0 0;
     }
 
     &__place-container {
@@ -1181,6 +1182,15 @@ text-align: center;
 .schedule-item--project {
     border-color: $color-project;
 }
+.schedule-item--laboratory {
+    border-color: $color-laboratory;
+}
+.schedule-item--seminar {
+    border-color: $color-seminar;
+}
+.schedule-item--exercise {
+    border-color: $color-exercise;
+}
 
 .classes-symbol {
     font-weight: 700;
@@ -1191,6 +1201,15 @@ text-align: center;
 }
 .classes-symbol--project {
     color: $color-project;
+}
+.classes-symbol--laboratory {
+    color: $color-laboratory;
+}
+.classes-symbol--seminar {
+    color: $color-seminar;
+}
+.classes-symbol--exercise {
+    color: $color-exercise;
 }
 
 .person-label {

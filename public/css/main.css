@@ -2847,7 +2847,8 @@ ul {
   .schedule-item__row-item:last-child {
     text-align: right; }
   .schedule-item__title-container {
-    text-align: left; }
+    text-align: left;
+    padding: 0 10px 0 0; }
   .schedule-item__place-container {
     color: #444444;
     white-space: nowrap;
@@ -2859,6 +2860,15 @@ ul {
 .schedule-item--project {
   border-color: #7000C8; }
 
+.schedule-item--laboratory {
+  border-color: #0069B6; }
+
+.schedule-item--seminar {
+  border-color: #FFA724; }
+
+.schedule-item--exercise {
+  border-color: #2AA000; }
+
 .classes-symbol {
   font-weight: 700;
   font-size: 14px; }
@@ -2868,6 +2878,15 @@ ul {
 
 .classes-symbol--project {
   color: #7000C8; }
+
+.classes-symbol--laboratory {
+  color: #0069B6; }
+
+.classes-symbol--seminar {
+  color: #FFA724; }
+
+.classes-symbol--exercise {
+  color: #2AA000; }
 
 .person-label {
   color: #777777; }
@@ -4548,5 +4567,3 @@ ul {
         height: 100%; } }
 
 /** sections-end **/
-
-/*# sourceMappingURL=main.css.map */
