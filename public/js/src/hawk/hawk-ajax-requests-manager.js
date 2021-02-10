@@ -39,6 +39,9 @@ Hawk.AjaxRequestsManager = function(options) {
 
         this.ajaxRequestWorking = true;
 
+        console.log(bundle);
+        console.log(type);
+
         const headers = options.headers || {};
 
         const onSuccess = options.onSuccess || this.options.onSuccess;
@@ -49,13 +52,13 @@ Hawk.AjaxRequestsManager = function(options) {
         this.ajaxRequest = $.ajax({
             type: type,
             url: path,
-            //contentType: "application/json",
+            contentType: "application/json",
             dataType: "json",
             data: bundle,
             headers: Object.assign({
-                contentType: 'application/json'
+                //contentType: 'application/json'
             }, headers),
-            traditional: true,
+            //traditional: true,
             success: function(result) {
                 console.log(result);
 

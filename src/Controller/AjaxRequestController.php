@@ -52,6 +52,19 @@ class AjaxRequestController extends AbstractController {
             $rawResult = $response->getContent();
 
             $result = json_decode($rawResult, true);
+        } else {
+            $result = [];
+        }
+
+        $jsonResponse = new JsonResponse($result);
+        $jsonResponse->setStatusCode($statusCode);
+
+        return $jsonResponse;
+
+        if ($statusCode == 200) {
+            $rawResult = $response->getContent();
+
+            $result = json_decode($rawResult, true);
 
             if (isset($result['value'])) {
                 $status = RequestStatus::SUCCESS;
@@ -84,8 +97,13 @@ class AjaxRequestController extends AbstractController {
      */
     public function getStudent(Request $request) {
 
-        $headers[] = 'Content-Type: application/json';
-        $headers[] = 'Authorization: Bearer ' . $request->get('token');
+//        $headers[] = 'Content-Type: application/json';
+//        $headers[] = 'Authorization: Bearer ' . $request->get('token');
+
+        $headers[] = 'Content-Type: ' . $request->headers->get('content-type');
+        $headers[] = 'Authorization: ' . $request->headers->get('authorization');
+
+        //var_dump($request->headers);
 
         $result = $request->getContent();
 
@@ -95,25 +113,34 @@ class AjaxRequestController extends AbstractController {
 
         $statusCode = $response->getStatusCode();
 
-        if ($statusCode == 200) {
-            $rawResult = $response->getContent();
+        $rawResult = $response->getContent();
 
-            $result = json_decode($rawResult, true);
+        $result = json_decode($rawResult, true);
 
-            $status = RequestStatus::SUCCESS;
-            $message = "Sukces";
-        } else {
-            $status = RequestStatus::ERROR;
-            $message = "Błędny token.";
-        }
+        $jsonResponse = new JsonResponse($result);
+        $jsonResponse->setStatusCode($statusCode);
 
-        return new JsonResponse([
-            'status' => $status,
-            'message' => $message,
-            'bundle' => $result,
-            'statusCode' => $statusCode,
-            'headers' => $headers
-        ]);
+        return $jsonResponse;
+
+//        if ($statusCode == 200) {
+//            $rawResult = $response->getContent();
+//
+//            $result = json_decode($rawResult, true);
+//
+//            $status = RequestStatus::SUCCESS;
+//            $message = "Sukces";
+//        } else {
+//            $status = RequestStatus::ERROR;
+//            $message = "Błędny token.";
+//        }
+//
+//        return new JsonResponse([
+//            'status' => $status,
+//            'message' => $message,
+//            'bundle' => $result,
+//            'statusCode' => $statusCode,
+//            'headers' => $headers
+//        ]);
 //
 //
 //        return new JsonResponse([
@@ -168,12 +195,15 @@ class AjaxRequestController extends AbstractController {
     }
 
     /**
-     * @Route("/ajax/get-registrations")
+     * @Route("/api/enrollment-service/student-registrations")
      */
     public function getRegistrations(Request $request) {
 
-        $headers[] = 'Content-Type: application/json';
-        $headers[] = 'Authorization: Bearer ' . $request->get('token');
+//        $headers[] = 'Content-Type: application/json';
+//        $headers[] = 'Authorization: Bearer ' . $request->get('token');
+
+        $headers[] = 'Content-Type: ' . $request->headers->get('content-type');
+        $headers[] = 'Authorization: ' . $request->headers->get('authorization');
 
         $result = $request->getContent();
 
@@ -190,6 +220,15 @@ class AjaxRequestController extends AbstractController {
         ]);
 
         $statusCode = $response->getStatusCode();
+
+        $rawResult = $response->getContent();
+
+        $result = json_decode($rawResult, true);
+
+        $jsonResponse = new JsonResponse($result);
+        $jsonResponse->setStatusCode($statusCode);
+
+        return $jsonResponse;
 
         if ($statusCode == 200) {
             $rawResult = $response->getContent();
@@ -252,22 +291,37 @@ class AjaxRequestController extends AbstractController {
     }
 
     /**
-     * @Route("/ajax/get-courses")
+     * @Route("/api/enrollment-service/student-registrations/{registrationId}/courses")
      */
-    public function getCourses(Request $request)
+    public function getCourses($registrationId, Request $request)
     {
 
-        $headers[] = 'Content-Type: application/json';
-        $headers[] = 'Authorization: Bearer ' . $request->get('token');
+//        $headers[] = 'Content-Type: application/json';
+//        $headers[] = 'Authorization: Bearer ' . $request->get('token');
+
+        $headers[] = 'Content-Type: ' . $request->headers->get('content-type');
+        $headers[] = 'Authorization: ' . $request->headers->get('authorization');
 
         $result = "";
-        $registrationID = $request->get('registrationID');
+        //$registrationID = $request->get('registrationID');
 
-        $response = $this->client->request('GET', 'https://3.10.51.120/api/enrollment-service/student-registrations/' . $registrationID . '/courses', [
+        $response = $this->client->request('GET', 'https://3.10.51.120/api/enrollment-service/student-registrations/' . $registrationId . '/courses', [
             'headers' => $headers
         ]);
 
         $statusCode = $response->getStatusCode();
+
+        $rawResult = $response->getContent();
+
+        $result = json_decode($rawResult, true);
+
+        $jsonResponse = new JsonResponse($result);
+        $jsonResponse->setStatusCode($statusCode);
+
+        return $jsonResponse;
+
+
+
 
         if ($statusCode == 200) {
             $rawResult = $response->getContent();
@@ -291,16 +345,26 @@ class AjaxRequestController extends AbstractController {
     }
 
     /**
-     * @Route("/student-registrations/{studentRegistrationId}/enroll")
+     * @Route("/api/student-registrations/{studentRegistrationId}/enroll")
      */
     public function enroll($studentRegistrationId, Request $request)
     {
 
-        $headers[] = 'Content-Type: application/json';
-        $headers[] = 'Authorization: Bearer ' . $request->get('token');
+//        $headers[] = 'Content-Type: application/json';
+//        $headers[] = 'Authorization: Bearer ' . $request->get('token');
+
+
+        $content = explode('=', $request->getContent());
+
+        $groupID = $content[1];
+
+        $headers[] = 'Content-Type: ' . $request->headers->get('content-type');
+        $headers[] = 'Authorization: ' . $request->headers->get('authorization');
+
+        //var_dump($headers);
 
         //$studentRegistrationId = $request->query->get('studentRegistrationId');
-        $groupID = $request->get('groupID');
+        //$groupID = $request->get('groupID');
 
         $debug = [];
 
@@ -308,16 +372,29 @@ class AjaxRequestController extends AbstractController {
             'groupId' => intval($groupID)
         ]);
 
+//        var_dump(json_encode([
+//            'groupId' => intval($groupID)
+//        ]));
+
         //var_dump ($debug);
 
         $response = $this->client->request('POST', 'https://3.10.51.120/api/enrollment-service/student-registrations/' . $studentRegistrationId . '/enroll', [
             'headers' => $headers,
             'body' => json_encode([
-                'groupId' => $groupID
+                'groupId' => intval($groupID)
             ])
         ]);
 
         $statusCode = $response->getStatusCode();
+
+        $rawResult = $response->getContent();
+
+        $result = json_decode($rawResult, true);
+
+        $jsonResponse = new JsonResponse($result);
+        $jsonResponse->setStatusCode($statusCode);
+
+        return $jsonResponse;
 
         $result = [];
 
@@ -346,13 +423,17 @@ class AjaxRequestController extends AbstractController {
     }
 
     /**
-     * @Route("/enrollment-service/student-registrations/{studentRegistrationId}/enrollment/{groupId}")
+     * @Route("/api/enrollment-service/student-registrations/{studentRegistrationId}/enrollment/{groupId}")
      */
     public function roll($studentRegistrationId, $groupId, Request $request)
     {
 
-        $headers[] = 'Content-Type: application/json';
-        $headers[] = 'Authorization: Bearer ' . $request->get('token');
+//        $headers[] = 'Content-Type: application/json';
+//        $headers[] = 'Authorization: Bearer ' . $request->get('token');
+
+
+        $headers[] = 'Content-Type: ' . $request->headers->get('content-type');
+        $headers[] = 'Authorization: ' . $request->headers->get('authorization');
 
         //$studentRegistrationId = $request->query->get('studentRegistrationId');
         //$groupID = $request->get('groupID');
@@ -370,6 +451,15 @@ class AjaxRequestController extends AbstractController {
         ]);
 
         $statusCode = $response->getStatusCode();
+
+        $rawResult = $response->getContent();
+
+        $result = json_decode($rawResult, true);
+
+        $jsonResponse = new JsonResponse($result);
+        $jsonResponse->setStatusCode($statusCode);
+
+        return $jsonResponse;
 
         $result = [];
 

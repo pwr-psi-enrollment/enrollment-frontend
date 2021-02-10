@@ -51,22 +51,30 @@ $(document).ready(function() {
             var page = this.getRoute(route);
 
             if (typeof page.header != 'undefined') {
-                this.requestManager.get(page.header.path, {
-                    onSuccess: function(result) {
-                        that.header.html(result.html);
-
-                        page.header.callback();
-                    }
+                that.header.load(page.header.path, function() {
+                    page.header.callback();
                 });
+
+                // this.requestManager.get(page.header.path, {
+                //     onSuccess: function(result) {
+                //         that.header.html(result);
+                //
+                //         page.header.callback();
+                //     }
+                // });
             }
 
-            this.requestManager.get(page.content.path, {
-                onSuccess: function(result) {
-                    that.content.html(result.html);
-
-                    page.content.callback();
-                }
+            that.content.load(page.content.path, function() {
+                page.content.callback();
             });
+
+            // this.requestManager.get(page.content.path, {
+            //     onSuccess: function(result) {
+            //         that.content.html(result);
+            //
+            //         page.content.callback();
+            //     }
+            // });
         }
     }
 
@@ -99,18 +107,20 @@ $(document).ready(function() {
         routes: {
             main: {
                 header: {
-                    path: "/template/site-header",
+                    path: "/template/site-header.html",
                     callback: function() {
                         requestsManager.post("/api/enrollment-service/student-details", {
-                            token: localStorage.getItem('token')
+                            //token: localStorage.getItem('token')
                         }, {
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": "Bearer " + localStorage.getItem('token')
+                            },
                             onSuccess: function(result) {
-                                if (result.statusCode == 200) {
-                                    Student.update('name', result.bundle.name);
-                                    Student.update('indexNumber', result.bundle.indexNumber);
-                                } else {
-                                    console.log("Błędny tokn");
-                                }
+
+                                Student.update('name', result.name);
+                                Student.update('indexNumber', result.indexNumber);
+
 
                             }
                         });
@@ -130,7 +140,7 @@ $(document).ready(function() {
                     }
                 },
                 content: {
-                    path: "/template/site-main",
+                    path: "/template/site-main.html",
                     callback: function() {
 
 
@@ -143,10 +153,14 @@ $(document).ready(function() {
                         });
 
                         requestsManager.post("/api/enrollment-service/student-details", {
-                            token: localStorage.getItem('token')
+
                         }, {
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": "Bearer " + localStorage.getItem('token')
+                            },
                            onSuccess: function(result) {
-                               AppComponentManagers.FieldOfStudy.parseItems(result.bundle.fieldsOfStudy, {});
+                               AppComponentManagers.FieldOfStudy.parseItems(result.fieldsOfStudy, {});
                            }
                         });
 
@@ -163,7 +177,7 @@ $(document).ready(function() {
             },
             login: {
                 content: {
-                    path: "/template/login",
+                    path: "/template/site-login.html",
                     callback: function() {
                         pagesManager.header.html('');
 
@@ -180,13 +194,16 @@ $(document).ready(function() {
                             onCorrect: function(result) {
                                 console.log(result);
 
-                                if (typeof result.bundle.token != 'undefined') {
-                                    localStorage.setItem("token", result.bundle.token);
+                                if (typeof result.value != 'undefined') {
+                                    localStorage.setItem("token", result.value);
 
                                     pagesManager.load("main");
                                 } else {
                                     loginForm.changeMessage("Błędny login lub hasło");
                                 }
+                            },
+                            onError: function(result) {
+                                loginForm.changeMessage("Błędny login lub hasło");
                             }
                         });
                         loginForm.run();
@@ -200,14 +217,17 @@ $(document).ready(function() {
 
     if (localStorage.token) {
         requestsManager.post("/api/enrollment-service/student-details", {
-            token: localStorage.getItem('token')
+            //token: localStorage.getItem('token')
         }, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem('token')
+            },
             onSuccess: function(result) {
-                if (result.statusCode == 200) {
-                    pagesManager.load("main");
-                } else {
-                    pagesManager.load("login");
-                }
+                pagesManager.load("main");
+            },
+            onError: function(result) {
+                pagesManager.load("login");
             }
         });
     } else {
@@ -215,81 +235,6 @@ $(document).ready(function() {
     }
 
 
-
-
-
-    /**$(window).resize(function() {
-      $('.scrollable-section').mCustomScrollbar('update');
-    });**/
-
-    /***** RATE FIELD *****/
-
-
-    /***** NEWSLETTER FORM *****/
-
-    var fields = [
-      new Hawk.FormField("name", Hawk.formFieldTypes.TEXT, "form-field", true, Hawk.Validator.isNotEmpty),
-      new Hawk.FormField("email", Hawk.formFieldTypes.TEXT, "form-field", true, Hawk.Validator.isEmail),
-      new Hawk.FormField("phone", Hawk.formFieldTypes.TEXT, "form-field", false, Hawk.Validator.isNotEmpty),
-      new Hawk.FormField("message", Hawk.formFieldTypes.TEXTAREA, "form-field", true, Hawk.Validator.isNotEmpty),
-      new Hawk.FormField("conditions", Hawk.formFieldTypes.CHECKBOX, "choice-field", true, Hawk.Validator.isSomethingChecked)
-    ];
-
-    var lang = $('html').attr('lang');
-
-    var mailer = new Hawk.FormSender('form-contact', fields, {
-        extraData: {
-           action: 'mail',
-           lang: lang
-        }
-    });
-    mailer.run();
-
-
-    /***** ANOTHER LITTLE FUNCTIONS *****/
-
-    function checkSections(sections, callback, offset) {
-      sections.each(function() {
-          var currentOffset = $(this).offset().top;
-
-          if (typeof offset != 'undefined') {
-            currentOffset = currentOffset - offset;
-          }
-
-          if (window.scrollY >= currentOffset && window.scrollY <= currentOffset + $(this).outerHeight()) {
-            if (typeof callback == 'function') {
-              if (callback($(this))) {
-                return true;
-              }
-            }  
-          }
-      });
-    }
-
-    var ajaxRequestManager = new Hawk.AjaxRequestsManager();
-
-   // ajaxRequestManager.get("http://localhost:8080/api/s3//buckets", {});
-
-    var sections = $('.site-section').add($('#site-header')).add($('#site-footer')).add($('.skew-section'));
-    var menuToggler = $('.menu-toggler');
-    var menuTogglerContainer = $('.menu-toggler-container');
-
-
-    $(window).scroll(function() {
-      checkSections(sections, function(current) {
-        if (!current.hasClass('site-section--medium') && !current.hasClass('site-section--dark') && !current.hasClass('site-footer') && !current.hasClass('skew-section')) {
-          menuToggler.removeClass('icon-hamburger--light');
-        } else {
-          menuToggler.addClass('icon-hamburger--light');
-        }
-
-        if (current.hasClass('site-section--surrounded')) {
-          menuTogglerContainer.addClass('menu-toggler-container--deep');
-        } else {
-          menuTogglerContainer.removeClass('menu-toggler-container--deep');
-        }
-      }, 16);
-    });
 
 });
 

@@ -979,11 +979,15 @@ AppComponentManagers.Semester = new Hawk.ComponentsManager(AppComponents.Semeste
 
             component.update('active', 1);
 
-            requestsManager.post("/ajax/get-registrations?registeredId=" + EnrollmentManager.fieldOfStudy.get('registeredId') + "&semesterId=" + component.getID(), {
-                token: localStorage.token
+            requestsManager.post("/api/enrollment-service/student-registrations?registeredId=" + EnrollmentManager.fieldOfStudy.get('registeredId') + "&semesterId=" + component.getID(), {
+                //token: localStorage.token
                 }, {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem('token')
+                },
                 onSuccess: function(result) {
-                    AppComponentManagers.Registration.parseItems(result.bundle, {});
+                    AppComponentManagers.Registration.parseItems(result, {});
                 }
             });
 
@@ -1014,17 +1018,20 @@ AppComponentManagers.Registration = new Hawk.ComponentsManager(AppComponents.Reg
 
             component.update('active', 1);
 
-            requestsManager.post("/ajax/get-courses", {
-                token: localStorage.token,
-                registrationID: component.getID(),
+            requestsManager.post("/api/enrollment-service/student-registrations/" + component.getID() + "/courses", {
+               // token: localStorage.token
             }, {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem('token')
+                },
                 onSuccess: function(result) {
                     EnrollmentManager.coursesContainer.find('.bookmarks-manager__content').html('');
                     EnrollmentManager.coursesContainer.velocity("slideDown");
 
                     console.log();
 
-                    AppComponentManagers.Course.parseItems(result.bundle.courses, {});
+                    AppComponentManagers.Course.parseItems(result.courses, {});
 
 
 
@@ -1078,14 +1085,20 @@ AppComponentManagers.Course = new Hawk.ComponentsManager(AppComponents.Course, '
                     var lectureGroup = AppComponents.LectureGroup.getInstance(groupID);
                     var course = AppComponents.Course.getInstance(courseID);
 
+                    console.log(groupID);
+
                     if (lectureGroup.get('enrolled') == 1) {
-                        requestsManager.post("/enrollment-service/student-registrations/" + EnrollmentManager.registration.getID() + "/enrollment/" + groupID, {
-                            token: localStorage.token
+                        requestsManager.post("/api/enrollment-service/student-registrations/" + EnrollmentManager.registration.getID() + "/enrollment/" + groupID, {
+                            //token: localStorage.token
                         }, {
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": "Bearer " + localStorage.getItem('token')
+                            },
                             onSuccess: function (result) {
 
                                 lectureGroup.update('enrolled', false);
-                                lectureGroup.update('takenSeats', result.bundle.takenSeats);
+                                lectureGroup.update('takenSeats', result.takenSeats);
 
                                 course.update('enrolled', false);
 
@@ -1096,14 +1109,17 @@ AppComponentManagers.Course = new Hawk.ComponentsManager(AppComponents.Course, '
                             }
                         });
                     } else {
-                        requestsManager.post("/student-registrations/" + EnrollmentManager.registration.getID() + "/enroll", {
-                            token: localStorage.token,
-                            groupID: groupID,
+                        requestsManager.post("/api/student-registrations/" + EnrollmentManager.registration.getID() + "/enroll", {
+                            groupID: parseInt(groupID)
                         }, {
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": "Bearer " + localStorage.getItem('token')
+                            },
                             onSuccess: function (result) {
 
                                 lectureGroup.update('enrolled', true);
-                                lectureGroup.update('takenSeats', result.bundle.takenSeats);
+                                lectureGroup.update('takenSeats', result.takenSeats);
 
                                 course.update('enrolled', true);
 

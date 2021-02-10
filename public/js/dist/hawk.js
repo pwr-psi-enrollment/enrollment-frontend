@@ -1915,34 +1915,42 @@ Hawk.FormSender = function(id, fields, options) {
                 dataType: 'json',
                 success: function(result) {
                     console.log(result);
-                    if (result.status == Hawk.RequestStatus.SUCCESS) {
-                        that.clear();
-                        if (that.options.autoDisable) {
-                            that.hideButton();
-                            that.disable();
-                        }
-                        if (typeof that.options.onCorrect == 'function') {
-                            that.options.onCorrect(result);
-                        } else {
-                            that.changeMessage(result.message);
-                        }
-                    } else if (result.status == Hawk.RequestStatus.ERROR) {
-                        that.checkFields(result.errorFields);
-                        that.changeMessage(result.message);
-                        if (typeof that.options.onError == 'function') {
-                            that.options.onError(result);
-                        }
+                    //if (result.status == Hawk.RequestStatus.SUCCESS) {
+                    that.clear();
+                    // if (that.options.autoDisable) {
+                    //     that.hideButton();
+                    //
+                    //     that.disable();
+                    // }
+                    if (typeof that.options.onCorrect == 'function') {
+                        that.options.onCorrect(result);
                     } else {
-                        that.checkFields(result.errorFields);
-                        that.changeMessage(result.message);
-                        if (typeof that.options.onException == 'function') {
-                            that.options.onException(result);
-                        }
+                        //that.changeMessage(result.message);
                     }
+                    // } else if (result.status == Hawk.RequestStatus.ERROR) {
+                    //     that.checkFields(result.errorFields);
+                    //
+                    //     that.changeMessage(result.message);
+                    //
+                    //     if (typeof that.options.onError == 'function') {
+                    //         that.options.onError(result);
+                    //     }
+                    // } else {
+                    //     that.checkFields(result.errorFields);
+                    //
+                    //     that.changeMessage(result.message);
+                    //
+                    //     if (typeof that.options.onException == 'function') {
+                    //         that.options.onException(result);
+                    //     }
+                    // }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     console.log(jqXHR.responseText);
-                    that.changeMessage("Wystąpił nieoczekiwany problem podczas przetwarzania formularza. Proszę spróbować ponownie później.");
+                    //that.changeMessage("Wystąpił nieoczekiwany problem podczas przetwarzania formularza. Proszę spróbować ponownie później.");
+                    if (typeof that.options.onError == 'function') {
+                        that.options.onError(jqXHR.responseText);
+                    }
                     console.log(errorThrown);
                     if (typeof that.options.onException == 'function') {
                         that.options.onException();
@@ -2557,6 +2565,8 @@ Hawk.AjaxRequestsManager = function(options) {
         //     return false;
         // }
         this.ajaxRequestWorking = true;
+        console.log(bundle);
+        console.log(type);
         const headers = options.headers || {};
         const onSuccess = options.onSuccess || this.options.onSuccess;
         const onFailure = options.onFailure || this.options.onFailure;
@@ -2565,13 +2575,13 @@ Hawk.AjaxRequestsManager = function(options) {
         this.ajaxRequest = $.ajax({
             type: type,
             url: path,
-            //contentType: "application/json",
+            contentType: "application/json",
             dataType: "json",
             data: bundle,
             headers: Object.assign({
-                contentType: 'application/json'
+                //contentType: 'application/json'
             }, headers),
-            traditional: true,
+            //traditional: true,
             success: function(result) {
                 console.log(result);
                 onSuccess(result);
@@ -3883,11 +3893,15 @@ AppComponentManagers.Semester = new Hawk.ComponentsManager(AppComponents.Semeste
             EnrollmentManager.semester = component;
             AppComponents.Semester.updateAll('active', 0);
             component.update('active', 1);
-            requestsManager.post("/ajax/get-registrations?registeredId=" + EnrollmentManager.fieldOfStudy.get('registeredId') + "&semesterId=" + component.getID(), {
-                token: localStorage.token
+            requestsManager.post("/api/enrollment-service/student-registrations?registeredId=" + EnrollmentManager.fieldOfStudy.get('registeredId') + "&semesterId=" + component.getID(), {
+                //token: localStorage.token
             }, {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem('token')
+                },
                 onSuccess: function(result) {
-                    AppComponentManagers.Registration.parseItems(result.bundle, {});
+                    AppComponentManagers.Registration.parseItems(result, {});
                 }
             });
             EnrollmentManager.registrationsContainer.velocity("slideDown");
@@ -3911,18 +3925,18 @@ AppComponentManagers.Registration = new Hawk.ComponentsManager(AppComponents.Reg
             EnrollmentManager.registration = component;
             AppComponents.Registration.updateAll('active', 0);
             component.update('active', 1);
-            requestsManager.post("/ajax/get-courses", {
-                token: localStorage.token,
-                registrationID: component.getID(),
+            requestsManager.post("/api/enrollment-service/student-registrations/" + component.getID() + "/courses", {
+                // token: localStorage.token
             }, {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem('token')
+                },
                 onSuccess: function(result) {
                     EnrollmentManager.coursesContainer.find('.bookmarks-manager__content').html('');
                     EnrollmentManager.coursesContainer.velocity("slideDown");
                     console.log();
-                    AppComponentManagers.Course.parseItems(result.bundle.courses, {});
-                    Hawk.scrollToElement({
-                        anchor: "#courses-anchor"
-                    });
+                    AppComponentManagers.Course.parseItems(result.courses, {});
                 }
             });
         });
@@ -3958,13 +3972,18 @@ AppComponentManagers.Course = new Hawk.ComponentsManager(AppComponents.Course, '
                     var courseID = $(this).attr('data-course-id');
                     var lectureGroup = AppComponents.LectureGroup.getInstance(groupID);
                     var course = AppComponents.Course.getInstance(courseID);
+                    console.log(groupID);
                     if (lectureGroup.get('enrolled') == 1) {
-                        requestsManager.post("/enrollment-service/student-registrations/" + EnrollmentManager.registration.getID() + "/enrollment/" + groupID, {
-                            token: localStorage.token
+                        requestsManager.post("/api/enrollment-service/student-registrations/" + EnrollmentManager.registration.getID() + "/enrollment/" + groupID, {
+                            //token: localStorage.token
                         }, {
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": "Bearer " + localStorage.getItem('token')
+                            },
                             onSuccess: function(result) {
                                 lectureGroup.update('enrolled', false);
-                                lectureGroup.update('takenSeats', result.bundle.takenSeats);
+                                lectureGroup.update('takenSeats', result.takenSeats);
                                 course.update('enrolled', false);
                                 Schedule.removeGroup(lectureGroup);
                                 EnrollmentManager.semester.update('pointsECTS', parseInt(EnrollmentManager.semester.get('pointsECTS')) - course.get('ects'));
@@ -3972,13 +3991,16 @@ AppComponentManagers.Course = new Hawk.ComponentsManager(AppComponents.Course, '
                             }
                         });
                     } else {
-                        requestsManager.post("/student-registrations/" + EnrollmentManager.registration.getID() + "/enroll", {
-                            token: localStorage.token,
-                            groupID: groupID,
+                        requestsManager.post("/api/student-registrations/" + EnrollmentManager.registration.getID() + "/enroll", {
+                            groupID: parseInt(groupID)
                         }, {
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": "Bearer " + localStorage.getItem('token')
+                            },
                             onSuccess: function(result) {
                                 lectureGroup.update('enrolled', true);
-                                lectureGroup.update('takenSeats', result.bundle.takenSeats);
+                                lectureGroup.update('takenSeats', result.takenSeats);
                                 course.update('enrolled', true);
                                 Schedule.putGroup(lectureGroup);
                                 EnrollmentManager.semester.update('pointsECTS', parseInt(EnrollmentManager.semester.get('pointsECTS')) + course.get('ects'));

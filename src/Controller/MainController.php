@@ -29,7 +29,6 @@ class MainController extends AbstractController
         $result = $this->render('site-header.html', []);
 
         return new JsonResponse([
-            'success' => true,
             'html' => $result->getContent()
         ]);
     }
@@ -42,7 +41,6 @@ class MainController extends AbstractController
         $result = $this->render('site-main.html', []);
 
         return new JsonResponse([
-            'success' => true,
             'html' => $result->getContent()
         ]);
     }
@@ -55,7 +53,6 @@ class MainController extends AbstractController
         $result = $this->render('site-login.html', []);
 
         return new JsonResponse([
-            'success' => true,
             'html' => $result->getContent()
         ]);
     }
