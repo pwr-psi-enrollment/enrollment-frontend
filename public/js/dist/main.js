@@ -107,7 +107,7 @@ $(document).ready(function() {
         routes: {
             main: {
                 header: {
-                    path: "/template/site-header.html",
+                    path: "/templates/site-header.html",
                     callback: function() {
                         requestsManager.post("/api/enrollment-service/student-details", {
                             //token: localStorage.getItem('token')
@@ -140,7 +140,7 @@ $(document).ready(function() {
                     }
                 },
                 content: {
-                    path: "/template/site-main.html",
+                    path: "/templates/site-main.html",
                     callback: function() {
 
 
@@ -177,7 +177,7 @@ $(document).ready(function() {
             },
             login: {
                 content: {
-                    path: "/template/site-login.html",
+                    path: "/templates/site-login.html",
                     callback: function() {
                         pagesManager.header.html('');
 
