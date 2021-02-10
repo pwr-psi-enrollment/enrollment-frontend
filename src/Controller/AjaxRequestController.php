@@ -375,7 +375,7 @@ class AjaxRequestController extends AbstractController {
 
         $content = json_decode($request->getContent(), true);
 
-        $groupID = $content['groupID'];
+        $groupID = $content['groupId'];
 
         $headers[] = 'Content-Type: ' . $request->headers->get('content-type');
         $headers[] = 'Authorization: ' . $request->headers->get('authorization');

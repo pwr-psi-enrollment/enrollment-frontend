@@ -3982,7 +3982,7 @@ AppComponentManagers.Course = new Hawk.ComponentsManager(AppComponents.Course, '
                         });
                     } else {
                         requestsManager.post("/api/enrollment-service/student-registrations/" + EnrollmentManager.registration.getID() + "/enroll", JSON.stringify({
-                            groupID: parseInt(groupID)
+                            groupId: parseInt(groupID)
                         }), {
                             headers: {
                                 "Content-Type": "application/json",
